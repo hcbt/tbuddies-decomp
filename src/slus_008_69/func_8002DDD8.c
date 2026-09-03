@@ -1,8 +1,10 @@
 #ifndef PAD_CMD_DEFINED
 #define PAD_CMD_DEFINED
 struct PadCmd {
-    char pad0[0x2c];
-    int unk2c;
+    char pad0[0x24];
+    char unk24;
+    char pad25[7];
+    void *unk2c;
     char pad30[6];
     char unk36;
     char unk37;

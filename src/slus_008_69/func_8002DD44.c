@@ -11,8 +11,9 @@ struct PadCmd {
 };
 #endif
 
-void func_8002D494(struct PadCmd *p, char a1, void *a2, char a3) {
-    p->unk37 = a1;
-    p->unk2c = a2;
-    p->unk36 = a3;
+void func_8002DD44(struct PadCmd *p, char a1) {
+    p->unk37 = 0x43;
+    p->unk2c = &p->unk24;
+    p->unk24 = a1;
+    p->unk36 = 1;
 }
