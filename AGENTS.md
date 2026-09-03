@@ -10,16 +10,11 @@ All tools come from devenv. Every command is `devenv shell -- <cmd>`. After chan
 
 Done when Ghidra MCP `inspect` returns the listing for `0x8001a968` on program `SLUS_008.69`.
 
+The Ghidra MCP is a stdio wrapper (`devenv shell -- ghidra-mcp`). The client starts it at session start. If nothing is on `127.0.0.1:8080`, the wrapper launches `ghidra-open` and waits until `/mcp` answers, then proxies. A Ghidra window may appear. Leave it running.
+
 1. `devenv allow` if this worktree is new.
 2. `git pull --ff-only origin master` so the unmatched set is current.
-3. If nothing listens on `127.0.0.1:8080`, start Ghidra **in the background** from this repo (it is a GUI and never exits):
-
-   `devenv shell -- ghidra-open`
-
-   Launch it as a long-running/background process (`background: true`, `block_until_ms: 0`, or the equivalent). Leave it running. If 8080 is already open, skip this launch.
-4. Poll until `127.0.0.1:8080` accepts (MCP HTTP). First launch can take a minute. `ghidra-open` imports `game/SLUS_008.69` into `ghidra-project/` when no `.gpr` exists.
-5. Call Ghidra MCP `inspect` with `file_name=SLUS_008.69`, `action=listing`, `address=0x8001a968`. That call succeeding is the gate.
-6. If 8080 is up but the Ghidra MCP is **not** in this session's tool list, ask once for an MCP refresh (`/mcps` then `r` in Grok; restart the Ghidra MCP in other clients), then retry step 5. That is the only human step.
+3. Call Ghidra MCP `inspect` with `file_name=SLUS_008.69`, `action=listing`, `address=0x8001a968`. That call succeeding is the gate. If the Ghidra tools are missing, reconnect the Ghidra MCP in the client and retry.
 
 Overlays (`ENG.BIN`, `GAME.BIN`, `MNU.BIN`, `MPLR.BIN`, `ROT.BIN`, `SYS.BIN`, `TUTO.BIN`) are needed only when the chosen splat path is not `asm/slus_008_69/`. Probe `inspect` with `file_name` equal to that BIN; on failure run `devenv shell -- ghidra-import-overlays` and probe again. Overlay VRAM is the splat yaml `vram:` (eng is `0x8004F420`).
 
@@ -74,7 +69,7 @@ Then stop.
 
 ## Ghidra MCP
 
-Server: `http://127.0.0.1:8080/mcp` (themixednuts/GhidraMCP 0.8.0), declared in `.mcp.json`. Matching uses `inspect`:
+Clients spawn stdio `devenv shell -- ghidra-mcp` (`.mcp.json`, `.vscode/mcp.json`, `.agents/mcp_config.json`). That process talks to Ghidra's HTTP MCP at `http://127.0.0.1:8080/mcp` (themixednuts/GhidraMCP 0.8.0). Matching uses `inspect`:
 
 | action | target | returns |
 | --- | --- | --- |
@@ -92,7 +87,8 @@ CI on `ubuntu-latest` runs `compile` then `report --skip-link` and uploads `repo
 
 ```
 devenv allow
-devenv shell -- ghidra-open              # background; MCP on :8080
+devenv shell -- ghidra-mcp               # MCP stdio: starts Ghidra if needed, then proxies :8080
+devenv shell -- ghidra-open              # GUI only; ghidra-mcp already launches this
 devenv shell -- ghidra-import-overlays
 devenv shell -- compile src/<tu>/<name>.c
 devenv shell -- report --skip-link

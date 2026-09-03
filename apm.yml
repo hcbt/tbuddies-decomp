@@ -11,7 +11,8 @@ dependencies:
   mcp:
   - name: ghidra
     registry: false
-    transport: http
-    url: http://127.0.0.1:8080/mcp
+    transport: stdio
+    command: devenv
+    args: ["shell", "--", "ghidra-mcp"]
 includes: auto
 scripts: {}
