@@ -2,72 +2,99 @@
 
 This repo is the game (SLUS-008.69). The matching toolchain is imported from `github:hcbt/psxdecomp`.
 
-Work unit: **one function**. Session start, then match, then stop. A second function is a new turn.
+Default task when the prompt does not name a function: match **one** unmatched function, commit it, push `master`, stop. Name a function only if the human already did. A second function is a new session.
 
-## devenv
+All tools come from devenv. Every command is `devenv shell -- <cmd>`. After changing `devenv.nix` or `devenv.yaml`, confirm with a side effect, not a bare `devenv shell`.
 
-All tools come from devenv. Run every command as `devenv shell -- <cmd>`. Trust the project with `devenv allow`. After changing `devenv.nix` or `devenv.yaml`, confirm with a side effect, not a bare `devenv shell`.
+## 1. Session start
 
-Disc dump in `game/` (gitignored). Matching C in `src/` (per-function files plus splat TUs). splat yamls and address lists in `config/`. Stub `include/common.h`. Commit splat `asm/` so CI can compile and report without the dump. `report.json` and `objdiff.json` are generated and gitignored. Extra Psy-Q files in `tools/psyq/` (gitignored); headers ship in the toolkit.
-
-## Start of session
-
-Done when Ghidra MCP `inspect` returns the listing for `fun_8001a968` at `0x8001a968` in program `SLUS_008.69`.
+Done when Ghidra MCP `inspect` returns the listing for `0x8001a968` on program `SLUS_008.69`.
 
 1. `devenv allow` if this worktree is new.
-2. Probe Ghidra MCP: call `inspect` with `file_name=SLUS_008.69`, `action=listing`, `address=0x8001a968` (or `name=fun_8001a968`). If the Ghidra MCP is missing from the session tool list, Ghidra is down or the client has not refreshed — start it, then refresh MCP (`/mcps` then `r` in Grok; restart the MCP in other clients).
-3. If that call fails because nothing is listening on `http://127.0.0.1:8080/mcp`, start Ghidra in the **background** (the command is a GUI and does not exit):
+2. `git pull --ff-only origin master` so the unmatched set is current.
+3. If nothing listens on `127.0.0.1:8080`, start Ghidra **in the background** from this repo (it is a GUI and never exits):
 
    `devenv shell -- ghidra-open`
 
-   It imports `game/SLUS_008.69` into `ghidra-project/` when no `.gpr` exists (`SYSTEM.CNF` `BOOT=`). Wait until `http://127.0.0.1:8080/mcp` accepts, then retry step 2. Do not start a second Ghidra if 8080 is already up.
-4. Overlays: matching a function whose splat path is `asm/<ov>/` (not `asm/slus_008_69/`) needs that BIN in Ghidra. Call `inspect` with `file_name` equal to the BIN (`ENG.BIN`, `GAME.BIN`, `MNU.BIN`, `MPLR.BIN`, `ROT.BIN`, `SYS.BIN`, `TUTO.BIN`). On failure, `devenv shell -- ghidra-import-overlays`, then inspect again. Overlay VRAM is the splat yaml `vram:` (eng is `0x8004F420`).
+   Launch it as a long-running/background process (`background: true`, `block_until_ms: 0`, or the equivalent). Leave it running. If 8080 is already open, skip this launch.
+4. Poll until `127.0.0.1:8080` accepts (MCP HTTP). First launch can take a minute. `ghidra-open` imports `game/SLUS_008.69` into `ghidra-project/` when no `.gpr` exists.
+5. Call Ghidra MCP `inspect` with `file_name=SLUS_008.69`, `action=listing`, `address=0x8001a968`. That call succeeding is the gate.
+6. If 8080 is up but the Ghidra MCP is **not** in this session's tool list, ask once for an MCP refresh (`/mcps` then `r` in Grok; restart the Ghidra MCP in other clients), then retry step 5. That is the only human step.
 
-APM (`devenv shell -- apm install`) deploys the Ghidra MCP to `.mcp.json`, `.vscode/mcp.json`, `.agents/`. Commit those configs. Do not copy skills into the tree by hand.
+Overlays (`ENG.BIN`, `GAME.BIN`, `MNU.BIN`, `MPLR.BIN`, `ROT.BIN`, `SYS.BIN`, `TUTO.BIN`) are needed only when the chosen splat path is not `asm/slus_008_69/`. Probe `inspect` with `file_name` equal to that BIN; on failure run `devenv shell -- ghidra-import-overlays` and probe again. Overlay VRAM is the splat yaml `vram:` (eng is `0x8004F420`).
 
-## One function
+## 2. Pick the function
 
-Done when `devenv shell -- report --skip-link` shows that unit at `matched_code_percent` 100, `matched_functions` is one higher than before, and the commit contains only that function's `.c` plus the splat TU `#include` line.
+Done when you have a splat name, a `.s` path, a `0x` address, a Ghidra `file_name`, and a destination `src/<tu>/<name>.c`.
 
-1. Pick the next unmatched `INCLUDE_ASM(...)` in `src/slus_008_69/main.c`. Prefer a short `asm/slus_008_69/nonmatchings/main/<name>.s` whose callees are already matched or Psy-Q (`CdInit`, `lib*.h`). Stay on the boot EXE until that TU is thin; then the same rule on an overlay TU. The splat symbol in the `INCLUDE_ASM` line is the function name.
-2. Read the original encodings: Ghidra MCP `inspect` `action=listing` (and `action=decompile` as a hint) on that address / name in the right program. The listing bytes are the spec. Ghidra C is not the match.
-3. Write `src/<tu>/<name>.c` using that splat name (see `src/slus_008_69/fun_8001a968.c`). `#include` Psy-Q headers as needed. Replace the TU's `INCLUDE_ASM("…", <name>)` with `#include "<name>.c"`.
+An unmatched function is an `INCLUDE_ASM("…", <name>)` line in `src/**/*.c`. A `#include "<name>.c"` line is already matched.
+
+1. If the human named a function, use that name.
+2. Otherwise take unmatched `INCLUDE_ASM` in `src/slus_008_69/main.c`. When that file has none left, use the other splat TUs (`src/eng/eng.c`, `src/game/game.c`, …).
+3. Score each candidate by instruction count: lines in `asm/<tu>/nonmatchings/<…>/<name>.s` that contain `/*` and `*/`. Take the smallest. Tie-break: prefer a body whose `jal` targets are already `#include`'d or are Psy-Q (`CdInit` and other `lib*.h` names, not `fun_`/`func_`).
+
+From `INCLUDE_ASM("asm/<tu>/nonmatchings/<folder>", <name>)`:
+
+| | |
+| --- | --- |
+| C | `src/<tu>/<name>.c` |
+| asm | `asm/<tu>/nonmatchings/<folder>/<name>.s` |
+| address | `0x` + the 8 hex digits in the first `/* … 80xxxxxx … */` comment (example: `/* 570C 80019CF8 … */` → `0x80019CF8`) |
+| Ghidra `file_name` | `slus_008_69` → `SLUS_008.69`; otherwise the BIN (`eng` → `ENG.BIN`, …) |
+| objdiff unit | `<tu>/<name>` |
+
+Worked example (already matched): `fun_8001a968` @ `0x8001a968` → `src/slus_008_69/fun_8001a968.c`, unit `slus_008_69/fun_8001a968`.
+
+## 3. Match it
+
+Done when `devenv shell -- report --skip-link` shows that unit at `matched_code_percent` 100 and `matched_functions` is one higher than before this session.
+
+1. `inspect` `action=listing` (spec) and `action=decompile` (hint) on that address in the right `file_name`. Use `address=` when Ghidra's name is `FUN_…` and splat's is `func_…`/`fun_…`. The listing bytes are the spec. Ghidra C is a hint.
+2. Write `src/<tu>/<name>.c` with that splat name. Shape follows `src/slus_008_69/fun_8001a968.c`. Declare callees and `extern` data the listing uses. Psy-Q headers come from the toolkit (`<libcd.h>`, `<sys/types.h>`, …).
+3. In the splat TU, replace that one `INCLUDE_ASM("…", <name>)` with `#include "<name>.c"`.
 4. `devenv shell -- compile src/<tu>/<name>.c` until cc1/maspsx succeed.
-5. `devenv shell -- report --skip-link`. The unit is `<tu>/<name>` in `report.json` / `objdiff.json`. Iterate the `.c` against the listing until that unit is 100%. Flags are `cc1-2.8.1-psx -O2 -G0 -fno-schedule-insns`, maspsx aspsx 2.79 (`tools/compiler.py` in the toolkit). Change them only when a new leaf proves different flags.
-6. Commit that function (`feat:`). Leave `report.json` and `objdiff.json` untracked.
+5. `devenv shell -- report --skip-link`. Read `report.json` for unit `<tu>/<name>`. Iterate the `.c` against the listing until that unit is 100%.
 
-`devenv shell -- link` sha1s rebuilt binaries against `game/` when the dump is present. Mark a unit `metadata.complete` only on a C rebuild that sha1-matches, never on a splat-asm roundtrip. Headline numbers are `matched_code` / `total_code` and `complete_code` (fully linked).
+Flags (proven on `fun_8001a968` only; keep them until a new leaf proves otherwise): `cc1-2.8.1-psx -O2 -G0 -fno-schedule-insns`, maspsx aspsx 2.79, in the toolkit's `tools/compiler.py`.
 
-Do not run `splat-split` as part of matching a function. It regenerates yamls and TUs; `split.py` will `#include` an existing per-function `.c` itself, but the TU edit in step 3 is enough.
+When `game/SLUS_008.69` is present, `devenv shell -- link` after the report gate; the rebuilt binaries still sha1-match. `metadata.complete` is only for a C rebuild that sha1-matches, never a splat-asm roundtrip.
+
+Matching a function is a TU edit plus a new `.c`. `splat-split` regenerates yamls and is out of this loop.
+
+## 4. Commit and push
+
+Done when `git status -sb` is `## master...origin/master` and `origin/master` has the new `feat:` commit.
+
+1. `git pull --ff-only origin master`. If that function is now already matched on master, drop the work and pick another.
+2. Stage the new `.c` and the splat TU only.
+3. Commit: `feat: match <name>` (Conventional Commits). Name `github:hcbt/psxdecomp`, never a local path. `report.json` and `objdiff.json` stay untracked.
+4. `git push origin master`. Default branch is `master`. No feature branch, no PR. If the push is non-fast-forward, `git pull --rebase origin master` and push again.
+
+Then stop.
 
 ## Ghidra MCP
 
-Server: `http://127.0.0.1:8080/mcp` (themixednuts/GhidraMCP 0.8.0). Matching uses `inspect`:
+Server: `http://127.0.0.1:8080/mcp` (themixednuts/GhidraMCP 0.8.0), declared in `.mcp.json`. Matching uses `inspect`:
 
-| action | identifies the target | returns |
+| action | target | returns |
 | --- | --- | --- |
 | `decompile` | `name` or `address` | C-like pseudocode (hint) |
-| `listing` | `name` or `address` (`end_address` / `max_lines` / `cursor` for paging) | instruction bytes (spec) |
+| `listing` | `name` or `address` (`end_address` / `max_lines` / `cursor` to page) | instruction bytes (spec) |
 | `references_to` / `references_from` | `address` | xrefs |
 
-Every call needs `file_name` (program: `SLUS_008.69` or an overlay BIN). `functions` lists / looks up functions when the splat name and Ghidra name disagree (`FUN_8001a968` vs `fun_8001a968`). Addresses are `0x8001a968` form from the splat listing comment (`/* 637C 8001A968 … */`).
+Every call needs `file_name`. `functions` resolves splat vs Ghidra names.
 
-First 100% leaf: `fun_8001a968` @ `0x8001a968` (boot EXE).
+## Layout
 
-## Commands
+Disc dump in `game/` (gitignored). Matching C in `src/` (per-function files plus splat TUs). splat yamls and address lists in `config/`. Stub `include/common.h`. splat `asm/` is committed so CI can report without the dump. Extra Psy-Q files in `tools/psyq/` (gitignored); headers ship in the toolkit.
+
+CI on `ubuntu-latest` runs `compile` then `report --skip-link` and uploads `report.json` as `SLUS_008.69_report` for decomp.dev. Headline numbers are `matched_code` / `total_code` and `complete_code` (fully linked).
 
 ```
 devenv allow
 devenv shell -- ghidra-open              # background; MCP on :8080
-devenv shell -- ghidra-import-overlays   # overlay BINs at load address
-devenv shell -- compile [src/…]
-devenv shell -- report                   # also sha1-links
-devenv shell -- report --skip-link       # CI / match gate
+devenv shell -- ghidra-import-overlays
+devenv shell -- compile src/<tu>/<name>.c
+devenv shell -- report --skip-link
 devenv shell -- link
 ```
-
-CI on `ubuntu-latest` runs `compile` then `report --skip-link` and uploads `report.json` as `SLUS_008.69_report` for decomp.dev.
-
-## Git
-
-Default branch is `master`. Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). Commits name `github:hcbt/psxdecomp`, not local paths.
