@@ -2,7 +2,7 @@
 
 #include "func_80019CF8.c"
 
-INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_80019D00);
+#include "func_80019D00.c"
 
 INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_80019D08);
 
