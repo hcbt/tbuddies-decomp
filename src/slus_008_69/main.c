@@ -177,7 +177,7 @@ INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_8001E70C);
 
 INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_8001E734);
 
-INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_8001F050);
+#include "func_8001F050.c"
 
 INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_8001F07C);
 
