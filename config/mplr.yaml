@@ -1,0 +1,46 @@
+name: MPLR.BIN
+sha1: bc822c968a16e3ca849cea3e62031794d6578892
+options:
+  basename: mplr
+  target_path: game/MPLR.BIN
+  elf_path: build/mplr.elf
+  base_path: ..
+  platform: psx
+  compiler: PSYQ
+  asm_path: asm/mplr
+  src_path: src/mplr
+  build_path: build/mplr
+  ld_script_path: build/mplr.ld
+  ld_dependencies: True
+  find_file_boundaries: True
+  o_as_suffix: True
+  use_legacy_include_asm: False
+  include_asm_macro_style: default
+  create_c_files: True
+  migrate_rodata_to_functions: False
+  ld_align_section_vram_end: False
+  ld_align_segment_vram_end: False
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  ld_bss_is_noload: False
+  symbol_addrs_path:
+    - config/symbol_addrs.txt
+  reloc_addrs_path:
+    - config/reloc_addrs.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto_mplr.txt
+  undefined_syms_auto_path: config/undefined_syms_auto_mplr.txt
+  subalign: 4
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  gp_value: 0x0
+segments:
+  - name: mplr
+    type: code
+    start: 0x0
+    vram: 0x800C1D4C
+    align: 4
+    exclusive_ram_id: vram_800c1d4c
+    subsegments:
+      - [0x0, rodata, rodata]
+      - [0x134, c, mplr]
+      - [0xcd4, data, data]
+  - [0xeb4]

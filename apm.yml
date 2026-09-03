@@ -1,0 +1,17 @@
+name: tbuddies-decomp
+version: 1.0.0
+description: Ghidra MCP for Team Buddies matching decompilation
+author: hcbt
+targets:
+- copilot
+- claude
+- agent-skills
+dependencies:
+  apm: []
+  mcp:
+  - name: ghidra
+    registry: false
+    transport: http
+    url: http://127.0.0.1:8080/mcp
+includes: auto
+scripts: {}

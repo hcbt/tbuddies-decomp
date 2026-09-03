@@ -1,0 +1,41 @@
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+.DS_Store
+
+# User-supplied disc dump
+/game/
+
+# Ghidra project (created by `ghidra-open`)
+/ghidra-project/
+
+# APM package cache
+apm_modules/
+
+# uv / Python
+.venv/
+__pycache__/
+*.pyc
+
+# Extra Psy-Q files (headers ship in the imported toolkit)
+/tools/psyq/
+
+# splat / matching build products
+/assets/
+/build/
+.splache
+undefined_funcs_auto.txt
+undefined_syms_auto.txt
+/config/undefined_*_auto*.txt
+/*.d
+/objdiff.json
+/report.json
+/expected/

@@ -1,0 +1,23 @@
+name: report
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+      - name: Install devenv.sh
+        run: nix profile add nixpkgs#devenv
+      - run: devenv shell -- compile
+      - run: devenv shell -- report --skip-link
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SLUS_008.69_report
+          path: report.json

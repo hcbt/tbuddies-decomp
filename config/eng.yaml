@@ -1,0 +1,45 @@
+name: ENG.BIN
+sha1: 9a885d017cf8b424f6fdb687bc5f0cb1af5f742d
+options:
+  basename: eng
+  target_path: game/ENG.BIN
+  elf_path: build/eng.elf
+  base_path: ..
+  platform: psx
+  compiler: PSYQ
+  asm_path: asm/eng
+  src_path: src/eng
+  build_path: build/eng
+  ld_script_path: build/eng.ld
+  ld_dependencies: True
+  find_file_boundaries: True
+  o_as_suffix: True
+  use_legacy_include_asm: False
+  include_asm_macro_style: default
+  create_c_files: True
+  migrate_rodata_to_functions: False
+  ld_align_section_vram_end: False
+  ld_align_segment_vram_end: False
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  ld_bss_is_noload: False
+  symbol_addrs_path:
+    - config/symbol_addrs.txt
+  reloc_addrs_path:
+    - config/reloc_addrs.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto_eng.txt
+  undefined_syms_auto_path: config/undefined_syms_auto_eng.txt
+  subalign: 4
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  gp_value: 0x0
+segments:
+  - name: eng
+    type: code
+    start: 0x0
+    vram: 0x8004F420
+    align: 4
+    subsegments:
+      - [0x0, rodata, rodata]
+      - [0x2b24, c, eng]
+      - [0x60fd8, data, data]
+  - [0x7292c]

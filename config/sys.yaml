@@ -1,0 +1,45 @@
+name: SYS.BIN
+sha1: 00dcaa5343551935079027099e30d6c8ec114056
+options:
+  basename: sys
+  target_path: game/SYS.BIN
+  elf_path: build/sys.elf
+  base_path: ..
+  platform: psx
+  compiler: PSYQ
+  asm_path: asm/sys
+  src_path: src/sys
+  build_path: build/sys
+  ld_script_path: build/sys.ld
+  ld_dependencies: True
+  find_file_boundaries: True
+  o_as_suffix: True
+  use_legacy_include_asm: False
+  include_asm_macro_style: default
+  create_c_files: True
+  migrate_rodata_to_functions: False
+  ld_align_section_vram_end: False
+  ld_align_segment_vram_end: False
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  ld_bss_is_noload: False
+  symbol_addrs_path:
+    - config/symbol_addrs.txt
+  reloc_addrs_path:
+    - config/reloc_addrs.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto_sys.txt
+  undefined_syms_auto_path: config/undefined_syms_auto_sys.txt
+  subalign: 4
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  gp_value: 0x0
+segments:
+  - name: sys
+    type: code
+    start: 0x0
+    vram: 0x80038F28
+    align: 4
+    subsegments:
+      - [0x0, rodata, rodata]
+      - [0x85c, c, sys]
+      - [0x9f28, data, data]
+  - [0x164f8]

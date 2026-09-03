@@ -1,0 +1,48 @@
+name: SLUS_008.69
+sha1: 628678f916e6f61c034ecc42efda916947b5def9
+options:
+  basename: slus_008_69
+  target_path: game/SLUS_008.69
+  elf_path: build/slus_008_69.elf
+  base_path: ..
+  platform: psx
+  compiler: PSYQ
+  asm_path: asm/slus_008_69
+  src_path: src/slus_008_69
+  build_path: build/slus_008_69
+  ld_script_path: build/slus_008_69.ld
+  ld_dependencies: True
+  find_file_boundaries: True
+  o_as_suffix: True
+  use_legacy_include_asm: False
+  include_asm_macro_style: default
+  create_c_files: True
+  migrate_rodata_to_functions: False
+  ld_align_section_vram_end: False
+  ld_align_segment_vram_end: False
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  ld_bss_is_noload: False
+  symbol_addrs_path:
+    - config/symbol_addrs.txt
+  reloc_addrs_path:
+    - config/reloc_addrs.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto_slus_008_69.txt
+  undefined_syms_auto_path: config/undefined_syms_auto_slus_008_69.txt
+  subalign: 4
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  gp_value: 0x0
+segments:
+  - name: header
+    type: header
+    start: 0x0
+  - name: main
+    type: code
+    start: 0x800
+    vram: 0x80014DEC
+    align: 4
+    subsegments:
+      - [0x800, rodata, rodata]
+      - [0x570c, c, main]
+      - [0x1c2ec, data, data]
+  - [0x25000]
