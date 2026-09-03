@@ -47,7 +47,7 @@ Done when `devenv shell -- report --skip-link` shows that unit at `matched_code_
 1. `inspect` `action=listing` (spec) and `action=decompile` (hint) on that address in the right `file_name`. Use `address=` when Ghidra's name is `FUN_…` and splat's is `func_…`/`fun_…`. The listing bytes are the spec. Ghidra C is a hint.
 2. Write `src/<tu>/<name>.c` with that splat name. Shape follows `src/slus_008_69/fun_8001a968.c`. Declare callees and `extern` data the listing uses. Psy-Q headers come from the toolkit (`<libcd.h>`, `<sys/types.h>`, …).
 3. In the splat TU, replace that one `INCLUDE_ASM("…", <name>)` with `#include "<name>.c"`.
-4. `devenv shell -- compile src/<tu>/<name>.c` until cc1/maspsx succeed.
+4. `devenv shell -- compile src/<tu>/<name>.c` until cc1/maspsx succeed. Do not invoke `cpp-*-psx`, `cc1-*-psx`, or `maspsx` yourself.
 5. `devenv shell -- report --skip-link`. Read `report.json` for unit `<tu>/<name>`. Iterate the `.c` against the listing until that unit is 100%.
 
 Flags (proven on `fun_8001a968` only; keep them until a new leaf proves otherwise): `cc1-2.8.1-psx -O2 -G0 -fno-schedule-insns`, maspsx aspsx 2.79, in the toolkit's `tools/compiler.py`.

@@ -56,11 +56,11 @@
     "psxdecomp": {
       "flake": false,
       "locked": {
-        "lastModified": 1788427539,
-        "narHash": "sha256-0aMYTjaOatL7HajVKyJobNZRGQzJLGSFFGclVE9oOsQ=",
+        "lastModified": 1788436314,
+        "narHash": "sha256-n13SKj7ZiqFklmZ398Ipuqc9b1l4mPF7Qc6kIsd8t2k=",
         "owner": "hcbt",
         "repo": "psxdecomp",
-        "rev": "94961c6799edb1d19906d585951503d9e5c2b649",
+        "rev": "8977bf79780954c724720ed731a5a8d676019189",
         "type": "github"
       },
       "original": {
