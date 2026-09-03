@@ -786,7 +786,7 @@ INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_8002E790);
 
 INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_8002E820);
 
-INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_8002E868);
+#include "func_8002E868.c"
 
 INCLUDE_ASM("asm/slus_008_69/nonmatchings/main", func_8002E890);
 
