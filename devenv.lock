@@ -1,13 +1,31 @@
 {
   "nodes": {
+    "agents-nix": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1788522618,
+        "narHash": "sha256-8wacl3O4hZbyGl1BSWtPk0JCMBVowH0T5bS/5RHZoQM=",
+        "owner": "hcbt",
+        "repo": "agents-nix",
+        "rev": "47f9294b2f526521bce9886fb18d12305b9267b5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hcbt",
+        "repo": "agents-nix",
+        "type": "github"
+      }
+    },
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1788303825,
-        "narHash": "sha256-R1tqmYSV5yVTqmy+uISsSn+eEiqgW0F49orOHCOBSts=",
+        "lastModified": 1788402531,
+        "narHash": "sha256-vkKkue371vWQIKJBbVM/QTk6XU65PKJ+q39Q6+OKIVk=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "df5c75a82c3ac3d70a13c90fb869b7e44470a118",
+        "rev": "30058c52e5b8d7ed7ba4d8e7c793c7726aa7b9a0",
         "type": "github"
       },
       "original": {
@@ -18,21 +36,18 @@
       }
     },
     "nixpkgs": {
-      "inputs": {
-        "nixpkgs-src": "nixpkgs-src"
-      },
       "locked": {
-        "lastModified": 1787753358,
-        "narHash": "sha256-Tl77VbWyAKrOfRNQhL6JbQtb/MLzbYa/1RG1gWWfICk=",
-        "owner": "cachix",
-        "repo": "devenv-nixpkgs",
-        "rev": "256551e45f6303e142ab4a98be1bf243feb77dc0",
+        "lastModified": 1788372231,
+        "narHash": "sha256-7aqErvrAEz/5OcPA5p3M+tVOqeYc4oJXkNIPXfCqxAw=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "9387b3fcc0c23c86661636da63faabad4235a0a6",
         "type": "github"
       },
       "original": {
-        "owner": "cachix",
-        "ref": "rolling",
-        "repo": "devenv-nixpkgs",
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -53,14 +68,33 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "inputs": {
+        "nixpkgs-src": "nixpkgs-src"
+      },
+      "locked": {
+        "lastModified": 1787753358,
+        "narHash": "sha256-Tl77VbWyAKrOfRNQhL6JbQtb/MLzbYa/1RG1gWWfICk=",
+        "owner": "cachix",
+        "repo": "devenv-nixpkgs",
+        "rev": "256551e45f6303e142ab4a98be1bf243feb77dc0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cachix",
+        "ref": "rolling",
+        "repo": "devenv-nixpkgs",
+        "type": "github"
+      }
+    },
     "psxdecomp": {
       "flake": false,
       "locked": {
-        "lastModified": 1788436314,
-        "narHash": "sha256-n13SKj7ZiqFklmZ398Ipuqc9b1l4mPF7Qc6kIsd8t2k=",
+        "lastModified": 1788609759,
+        "narHash": "sha256-5WMua+w0vbn142E6E45+Dc0GvplnD6YM4InG14EukqM=",
         "owner": "hcbt",
         "repo": "psxdecomp",
-        "rev": "8977bf79780954c724720ed731a5a8d676019189",
+        "rev": "337ea0eda28101cbd70f5e300c0bba9af75aec82",
         "type": "github"
       },
       "original": {
@@ -71,8 +105,9 @@
     },
     "root": {
       "inputs": {
+        "agents-nix": "agents-nix",
         "devenv": "devenv",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "psxdecomp": "psxdecomp"
       }
     }

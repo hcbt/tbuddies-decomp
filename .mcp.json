@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "ghidra": {
-      "command": "devenv",
-      "args": ["shell", "--", "ghidra-mcp"]
-    }
-  }
-}

@@ -42,13 +42,13 @@ Worked example (already matched): `fun_8001a968` @ `0x8001a968` → `src/slus_00
 
 ## 3. Match it
 
-Done when `devenv shell -- report --skip-link` shows that unit at `matched_code_percent` 100 and `matched_functions` is one higher than before this session.
+Done when `devenv shell -- compile src/<tu>/<name>.c` succeeds and `devenv shell -- report --skip-link` shows that unit at `matched_code_percent` 100 and `matched_functions` is one higher than before this session.
 
 1. `inspect` `action=listing` (spec) and `action=decompile` (hint) on that address in the right `file_name`. Use `address=` when Ghidra's name is `FUN_…` and splat's is `func_…`/`fun_…`. The listing bytes are the spec. Ghidra C is a hint.
-2. Write `src/<tu>/<name>.c` with that splat name. Shape follows `src/slus_008_69/fun_8001a968.c`. Declare callees and `extern` data the listing uses. Psy-Q headers come from the toolkit (`<libcd.h>`, `<sys/types.h>`, …).
+2. Write `src/<tu>/<name>.c` as C that cc1 emits. Shape follows `src/slus_008_69/fun_8001a968.c`: a C function, callee declarations, `extern` data. Psy-Q headers come from the toolkit (`<libcd.h>`, `<sys/types.h>`, …). `compile` of that path exits non-zero on GNU `__asm__` in the file; `report` does not count those files. Unmatched stays `INCLUDE_ASM`.
 3. In the splat TU, replace that one `INCLUDE_ASM("…", <name>)` with `#include "<name>.c"`.
 4. `devenv shell -- compile src/<tu>/<name>.c` until cc1/maspsx succeed. Do not invoke `cpp-*-psx`, `cc1-*-psx`, or `maspsx` yourself.
-5. `devenv shell -- report --skip-link`. Read `report.json` for unit `<tu>/<name>`. Iterate the `.c` against the listing until that unit is 100%.
+5. `devenv shell -- report --skip-link`. Read `report.json` for unit `<tu>/<name>`. Iterate the C against the listing until that unit is 100%.
 
 Flags (proven on `fun_8001a968` only; keep them until a new leaf proves otherwise): `cc1-2.8.1-psx -O2 -G0 -fno-schedule-insns`, maspsx aspsx 2.79, in the toolkit's `tools/compiler.py`.
 
@@ -61,7 +61,7 @@ Matching a function is a TU edit plus a new `.c`. `splat-split` regenerates yaml
 Done when `git status -sb` is `## master...origin/master` and `origin/master` has the new `feat:` commit.
 
 1. `git pull --ff-only origin master`. If that function is now already matched on master, drop the work and pick another.
-2. Stage the new `.c` and the splat TU only.
+2. Stage the new `.c` and the splat TU only. One function per commit: that `.c` and the one `#include` line. Do not stage other unmatched `.c` files or extra TU edits.
 3. Commit: `feat: match <name>` (Conventional Commits). Name `github:hcbt/psxdecomp`, never a local path. `report.json` and `objdiff.json` stay untracked.
 4. `git push origin master`. Default branch is `master`. No feature branch, no PR. If the push is non-fast-forward, `git pull --rebase origin master` and push again.
 
@@ -69,7 +69,7 @@ Then stop.
 
 ## Ghidra MCP
 
-Clients spawn stdio `devenv shell -- ghidra-mcp` (`.mcp.json`, `.vscode/mcp.json`, `.agents/mcp_config.json`). That process talks to Ghidra's HTTP MCP at `http://127.0.0.1:8080/mcp` (themixednuts/GhidraMCP 0.8.0). Matching uses `inspect`:
+Clients spawn stdio `devenv shell -- ghidra-mcp`. That command is `agents.mcp.servers.ghidra` in `devenv.nix`. devenv `enterShell` writes gitignored `.mcp.json`; do not edit it by hand. That process talks to Ghidra's HTTP MCP at `http://127.0.0.1:8080/mcp` (themixednuts/GhidraMCP 0.8.0). Matching uses `inspect`:
 
 | action | target | returns |
 | --- | --- | --- |

@@ -17,8 +17,13 @@ devenv.local.yaml
 # Ghidra project (created by `ghidra-open`)
 /ghidra-project/
 
-# APM package cache
-apm_modules/
+# agents-nix generated dests
+.mcp.json
+.mcp.json.old
+.grok/
+.codex/
+opencode.json
+opencode.json.old
 
 # uv / Python
 .venv/
