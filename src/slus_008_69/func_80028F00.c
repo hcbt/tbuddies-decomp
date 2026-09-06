@@ -1,4 +1,4 @@
-extern int D_800342B8;
+extern unsigned int D_800342B8;
 
 int func_80028F00(void) {
     return D_800342B8 = -1;
