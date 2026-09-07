@@ -1,0 +1,94 @@
+[project]
+name = "Tiny Toon Adventures: The Great Beanstalk"
+
+[toolchain]
+cpp = "cpp-2.8.1-psx"
+cc1 = "cc1-2.8.1-psx"
+assembler = "mipsel-linux-gnu-as"
+linker = "mipsel-linux-gnu-ld"
+objcopy = "mipsel-linux-gnu-objcopy"
+maspsx = "maspsx"
+aspsx_version = "2.79"
+c_args = ["-O2", "-G0", "-fno-schedule-insns"]
+assembler_args = ["-EL", "-march=r4000", "-no-pad-sections"]
+linker_args = ["-EL"]
+
+[[binary]]
+id = "eng"
+name = "ENG.BIN"
+kind = "overlay"
+tu = "eng"
+sha1 = "9a885d017cf8b424f6fdb687bc5f0cb1af5f742d"
+size = 469292
+splat_config = "config/eng.yaml"
+linker_template = "build/eng.ld"
+
+[[binary]]
+id = "game"
+name = "GAME.BIN"
+kind = "overlay"
+tu = "game"
+sha1 = "4d268b736fd5986994c9253ce4f3bf32eed2dbac"
+size = 353796
+splat_config = "config/game.yaml"
+linker_template = "build/game.ld"
+
+[[binary]]
+id = "mnu"
+name = "MNU.BIN"
+kind = "overlay"
+tu = "mnu"
+sha1 = "680b6db41cf6f0ac97ddaf2483a414c4dda1d6ce"
+size = 54904
+splat_config = "config/mnu.yaml"
+linker_template = "build/mnu.ld"
+
+[[binary]]
+id = "mplr"
+name = "MPLR.BIN"
+kind = "overlay"
+tu = "mplr"
+sha1 = "bc822c968a16e3ca849cea3e62031794d6578892"
+size = 3764
+splat_config = "config/mplr.yaml"
+linker_template = "build/mplr.ld"
+
+[[binary]]
+id = "rot"
+name = "ROT.BIN"
+kind = "overlay"
+tu = "rot"
+sha1 = "03d5c2a660b357028e89f1d4ad71b456ea0193ca"
+size = 48448
+splat_config = "config/rot.yaml"
+linker_template = "build/rot.ld"
+
+[[binary]]
+id = "slus_008_69"
+name = "SLUS_008.69"
+kind = "executable"
+tu = "main"
+sha1 = "628678f916e6f61c034ecc42efda916947b5def9"
+size = 151552
+splat_config = "config/slus_008_69.yaml"
+linker_template = "build/slus_008_69.ld"
+
+[[binary]]
+id = "sys"
+name = "SYS.BIN"
+kind = "overlay"
+tu = "sys"
+sha1 = "00dcaa5343551935079027099e30d6c8ec114056"
+size = 91384
+splat_config = "config/sys.yaml"
+linker_template = "build/sys.ld"
+
+[[binary]]
+id = "tuto"
+name = "TUTO.BIN"
+kind = "overlay"
+tu = "tuto"
+sha1 = "c599e185d3aabcaf44b8f44bad2dff8c90d7e9b9"
+size = 15492
+splat_config = "config/tuto.yaml"
+linker_template = "build/tuto.ld"

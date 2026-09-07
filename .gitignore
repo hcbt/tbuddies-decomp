@@ -35,12 +35,15 @@ __pycache__/
 
 # splat / matching build products
 /assets/
-/build/
+/_build/
+/build/*
+!/build/*.ld
 .splache
 undefined_funcs_auto.txt
 undefined_syms_auto.txt
-/config/undefined_*_auto*.txt
 /*.d
+/binary__*.bin
+/linked__*.elf
 /objdiff.json
 /report.json
 /expected/

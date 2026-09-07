@@ -42,19 +42,20 @@ Worked example (already matched): `fun_8001a968` @ `0x8001a968` → `src/slus_00
 
 ## 3. Match it
 
-Done when `devenv shell -- compile src/<tu>/<name>.c` succeeds and `devenv shell -- report --skip-link` shows that unit at `matched_code_percent` 100 and `matched_functions` is one higher than before this session.
+Done when the function's explicit Meson target reports `matched C`, the progress report shows that unit at 100%, and the default build verifies all eight binaries.
 
 1. `inspect` `action=listing` (spec) and `action=decompile` (hint) on that address in the right `file_name`. Use `address=` when Ghidra's name is `FUN_…` and splat's is `func_…`/`fun_…`. The listing bytes are the spec. Ghidra C is a hint.
-2. Write `src/<tu>/<name>.c` as C that cc1 emits. Shape follows `src/slus_008_69/fun_8001a968.c`: a C function, callee declarations, `extern` data. Psy-Q headers come from the toolkit (`<libcd.h>`, `<sys/types.h>`, …). `compile` of that path exits non-zero on GNU `__asm__` in the file; `report` does not count those files. Unmatched stays `INCLUDE_ASM`.
+2. Write `src/<tu>/<name>.c` as C that cc1 emits. Shape follows `src/slus_008_69/fun_8001a968.c`: a C function, callee declarations, `extern` data. Psy-Q headers come from the toolkit (`<libcd.h>`, `<sys/types.h>`, …). Matching files are C, not listing wrappers containing GNU `__asm__`. Unmatched code stays `INCLUDE_ASM`.
 3. In the splat TU, replace that one `INCLUDE_ASM("…", <name>)` with `#include "<name>.c"`.
-4. `devenv shell -- compile src/<tu>/<name>.c` until cc1/maspsx succeed. Do not invoke `cpp-*-psx`, `cc1-*-psx`, or `maspsx` yourself.
-5. `devenv shell -- report --skip-link`. Read `report.json` for unit `<tu>/<name>`. Iterate the C against the listing until that unit is 100%.
+4. Run `devenv shell -- meson setup --reconfigure _build` once so the new file enters the graph. Iterate with `devenv shell -- meson compile -C _build selected__<tu>__<name>.o`; it must print `<name>: matched C`. Do not invoke the compiler or assembler directly.
+5. Run `devenv shell -- meson compile -C _build progress` and read `_build/report.json` for unit `<tu>/<name>`; it must be 100% and `matched_functions` must increase by one.
+6. Run `devenv shell -- meson compile -C _build`. This mandatory gate links every executable and overlay from the selected objects and verifies each result against its committed SHA-1.
 
-Flags (proven on `fun_8001a968` only; keep them until a new leaf proves otherwise): `cc1-2.8.1-psx -O2 -G0 -fno-schedule-insns`, maspsx aspsx 2.79, in the toolkit's `tools/compiler.py`.
+Compiler and assembler settings live in `psxdecomp.toml`. Change them there, then reconfigure Meson.
 
-When `game/SLUS_008.69` is present, `devenv shell -- link` after the report gate; the rebuilt binaries still sha1-match. `metadata.complete` is only for a C rebuild that sha1-matches, never a splat-asm roundtrip.
+Binary verification needs no private disc: it compares reconstructed output with the committed size and SHA-1. The disc dump is needed only for regeneration and Ghidra.
 
-Matching a function is a TU edit plus a new `.c`. `splat-split` regenerates yamls and is out of this loop.
+Matching a function is a TU edit plus a new `.c`. `psxdecomp regenerate` is out of this loop.
 
 ## 4. Commit and push
 
@@ -62,7 +63,7 @@ Done when `git status -sb` is `## master...origin/master` and `origin/master` ha
 
 1. `git pull --ff-only origin master`. If that function is now already matched on master, drop the work and pick another.
 2. Stage the new `.c` and the splat TU only. One function per commit: that `.c` and the one `#include` line. Do not stage other unmatched `.c` files or extra TU edits.
-3. Commit: `feat: match <name>` (Conventional Commits). Name `github:hcbt/psxdecomp`, never a local path. `report.json` and `objdiff.json` stay untracked.
+3. Commit: `feat: match <name>` (Conventional Commits). Name `github:hcbt/psxdecomp`, never a local path. `_build/` stays untracked.
 4. `git push origin master`. Default branch is `master`. No feature branch, no PR. If the push is non-fast-forward, `git pull --rebase origin master` and push again.
 
 Then stop.
@@ -83,14 +84,15 @@ Every call needs `file_name`. `functions` resolves splat vs Ghidra names.
 
 Disc dump in `game/` (gitignored). Matching C in `src/` (per-function files plus splat TUs). splat yamls and address lists in `config/`. Stub `include/common.h`. splat `asm/` is committed so CI can report without the dump. Extra Psy-Q files in `tools/psyq/` (gitignored); headers ship in the toolkit.
 
-CI on `ubuntu-latest` runs `compile` then `report --skip-link` and uploads `report.json` as `SLUS_008.69_report` for decomp.dev. Headline numbers are `matched_code` / `total_code` and `complete_code` (fully linked).
+CI on `ubuntu-latest` runs the default link-and-verification build, generates progress separately, and uploads `_build/report.json` as `SLUS_008.69_report` for decomp.dev.
 
 ```
 devenv allow
 devenv shell -- ghidra-mcp               # MCP stdio: starts Ghidra if needed, then proxies :8080
 devenv shell -- ghidra-open              # GUI only; ghidra-mcp already launches this
 devenv shell -- ghidra-import-overlays
-devenv shell -- compile src/<tu>/<name>.c
-devenv shell -- report --skip-link
-devenv shell -- link
+devenv shell -- meson setup _build
+devenv shell -- meson compile -C _build selected__<tu>__<name>.o
+devenv shell -- meson compile -C _build progress
+devenv shell -- meson compile -C _build
 ```
