@@ -393,7 +393,7 @@ INCLUDE_ASM("asm/game/nonmatchings/game", func_800CCA44);
 
 #include "func_800CCAA8.c"
 
-INCLUDE_ASM("asm/game/nonmatchings/game", func_800CCAB0);
+#include "func_800CCAB0.c"
 
 INCLUDE_ASM("asm/game/nonmatchings/game", func_800CCAB8);
 
