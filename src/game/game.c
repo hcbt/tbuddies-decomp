@@ -17,7 +17,7 @@ INCLUDE_ASM("asm/game/nonmatchings/game", func_800C7460);
 
 INCLUDE_ASM("asm/game/nonmatchings/game", func_800C758C);
 
-INCLUDE_ASM("asm/game/nonmatchings/game", func_800C75E8);
+#include "func_800C75E8.c"
 
 INCLUDE_ASM("asm/game/nonmatchings/game", func_800C75F0);
 
