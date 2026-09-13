@@ -1950,7 +1950,7 @@ INCLUDE_ASM("asm/game/nonmatchings/game", func_801053D4);
 
 #include "func_8010549C.c"
 
-INCLUDE_ASM("asm/game/nonmatchings/game", func_801054A4);
+#include "func_801054A4.c"
 
 INCLUDE_ASM("asm/game/nonmatchings/game", func_801054AC);
 
