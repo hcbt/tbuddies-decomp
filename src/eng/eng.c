@@ -354,7 +354,7 @@ INCLUDE_ASM("asm/eng/nonmatchings/eng", func_80067560);
 
 #include "func_80067650.c"
 
-INCLUDE_ASM("asm/eng/nonmatchings/eng", func_80067658);
+#include "func_80067658.c"
 
 INCLUDE_ASM("asm/eng/nonmatchings/eng", func_80067660);
 
