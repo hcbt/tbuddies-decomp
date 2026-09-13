@@ -280,7 +280,7 @@ INCLUDE_ASM("asm/eng/nonmatchings/eng", func_80064B18);
 
 #include "func_80064EAC.c"
 
-INCLUDE_ASM("asm/eng/nonmatchings/eng", func_80064EB4);
+#include "func_80064EB4.c"
 
 INCLUDE_ASM("asm/eng/nonmatchings/eng", func_80064EBC);
 
