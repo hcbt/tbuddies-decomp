@@ -2013,7 +2013,7 @@ INCLUDE_ASM("asm/game/nonmatchings/game", func_8010934C);
 
 INCLUDE_ASM("asm/game/nonmatchings/game", func_80109388);
 
-INCLUDE_ASM("asm/game/nonmatchings/game", func_80109C80);
+#include "func_80109C80.c"
 
 void func_80109C88(void) {
 }
