@@ -388,7 +388,7 @@ INCLUDE_ASM("asm/eng/nonmatchings/eng", func_8006822C);
 
 INCLUDE_ASM("asm/eng/nonmatchings/eng", func_80068548);
 
-INCLUDE_ASM("asm/eng/nonmatchings/eng", func_800685E0);
+#include "func_800685E0.c"
 
 INCLUDE_ASM("asm/eng/nonmatchings/eng", func_800685E8);
 
