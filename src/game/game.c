@@ -1072,7 +1072,7 @@ INCLUDE_ASM("asm/game/nonmatchings/game", func_800E43D4);
 
 #include "func_800E4428.c"
 
-INCLUDE_ASM("asm/game/nonmatchings/game", func_800E4430);
+#include "func_800E4430.c"
 
 INCLUDE_ASM("asm/game/nonmatchings/game", func_800E4438);
 
