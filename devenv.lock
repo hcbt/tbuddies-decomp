@@ -5,11 +5,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1788522618,
-        "narHash": "sha256-8wacl3O4hZbyGl1BSWtPk0JCMBVowH0T5bS/5RHZoQM=",
+        "lastModified": 1789114832,
+        "narHash": "sha256-tfYkCN4c98QW+lq15AIfaxxyeNVRsCgx7ST9/SBTUm8=",
         "owner": "hcbt",
         "repo": "agents-nix",
-        "rev": "47f9294b2f526521bce9886fb18d12305b9267b5",
+        "rev": "9cbd4e8c92513a06b9374394aa04db293d99a04c",
         "type": "github"
       },
       "original": {
@@ -21,11 +21,11 @@
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1788402531,
-        "narHash": "sha256-vkKkue371vWQIKJBbVM/QTk6XU65PKJ+q39Q6+OKIVk=",
+        "lastModified": 1789152246,
+        "narHash": "sha256-8ESHEGygXS5lmDepm5cMbmVd8DjcwgwzsmjHc9ffY1c=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "30058c52e5b8d7ed7ba4d8e7c793c7726aa7b9a0",
+        "rev": "6e323832a55097670dbd8eed04b1e63efc841dfa",
         "type": "github"
       },
       "original": {
@@ -90,11 +90,11 @@
     "psxdecomp": {
       "flake": false,
       "locked": {
-        "lastModified": 1788825226,
-        "narHash": "sha256-WuSsxCmRKnsQ3LUbCI3g2/9hkGCJSqHvTH3Okb14vvI=",
+        "lastModified": 1789284051,
+        "narHash": "sha256-ZdzlL4pOah0QFK9njBbW1zNel3TBcnjwgXxsAILqwWk=",
         "owner": "hcbt",
         "repo": "psxdecomp",
-        "rev": "6b77ad6974f8973a4a2109b8cf05bd7e8ea76e56",
+        "rev": "527a8500d84c4ee8b06ebfbf324c66955f37a5b9",
         "type": "github"
       },
       "original": {
