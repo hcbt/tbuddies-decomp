@@ -188,7 +188,7 @@ INCLUDE_ASM("asm/sys/nonmatchings/sys", func_8003D700);
 
 INCLUDE_ASM("asm/sys/nonmatchings/sys", func_8003D740);
 
-INCLUDE_ASM("asm/sys/nonmatchings/sys", func_8003D758);
+#include "func_8003D758.c"
 
 INCLUDE_ASM("asm/sys/nonmatchings/sys", func_8003D760);
 
