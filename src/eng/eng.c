@@ -180,7 +180,7 @@ INCLUDE_ASM("asm/eng/nonmatchings/eng", func_8005ED54);
 
 #include "func_8005EEDC.c"
 
-INCLUDE_ASM("asm/eng/nonmatchings/eng", func_8005EEF8);
+#include "func_8005EEF8.c"
 
 INCLUDE_ASM("asm/eng/nonmatchings/eng", func_8005EF14);
 
