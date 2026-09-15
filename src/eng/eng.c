@@ -1012,7 +1012,7 @@ INCLUDE_ASM("asm/eng/nonmatchings/eng", func_8007F004);
 
 INCLUDE_ASM("asm/eng/nonmatchings/eng", func_8007F054);
 
-INCLUDE_ASM("asm/eng/nonmatchings/eng", func_8007F64C);
+#include "func_8007F64C.c"
 
 INCLUDE_ASM("asm/eng/nonmatchings/eng", func_8007F654);
 
