@@ -125,7 +125,7 @@ INCLUDE_ASM("asm/rot/nonmatchings/rot", func_800C7038);
 
 INCLUDE_ASM("asm/rot/nonmatchings/rot", func_800C70C8);
 
-INCLUDE_ASM("asm/rot/nonmatchings/rot", func_800C73C0);
+#include "func_800C73C0.c"
 
 INCLUDE_ASM("asm/rot/nonmatchings/rot", func_800C73C8);
 
